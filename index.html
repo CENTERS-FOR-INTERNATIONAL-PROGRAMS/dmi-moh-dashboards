@@ -1,0 +1,226 @@
+<!DOCTYPE html>
+<!--[if lt IE 7]>      <html class="no-js lt-ie9 lt-ie8 lt-ie7"> <![endif]-->
+<!--[if IE 7]>         <html class="no-js lt-ie9 lt-ie8"> <![endif]-->
+<!--[if IE 8]>         <html class="no-js lt-ie9"> <![endif]-->
+<!--[if gt IE 8]>      <html class="no-js"> <!--<![endif]-->
+<html lang="en">
+
+<head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <title>Dashboard</title>
+    <link rel="icon" type="image/png" href="assets/images/ic_dashboard.png">
+    <meta name="description" content="">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <link rel="stylesheet" href="library/animate.css">
+    <link rel="stylesheet" href="library/fontawesome-free-6.4.0-web/css/all.min.css">
+</head>
+
+<style>
+    body {
+        background-image:
+            linear-gradient(90deg,
+                rgba(255, 255, 255, 0.8),
+                rgba(255, 255, 255, 0.8)),
+            url('assets/images/bg_ornate.jpg');
+    }
+
+    .view-card--fullscreen {
+        border: none;
+        width: 98%;
+        margin-left: 1%;
+        margin-right: 1%;
+        margin-bottom: 50px;
+        background: rgb(250, 250, 250);
+        height: 89vh;
+        border-radius: 10px;
+        box-shadow:
+            0 4px 6px 0 rgba(0, 0, 0, .14),
+            0 5px 3px -4px rgba(0, 0, 0, .2),
+            0 3px 7px 0 rgba(0, 0, 0, .12);
+    }
+
+    .view-display--hidden {
+        display: none !important;
+    }
+
+    .view-dash--controls {
+        position: absolute;
+        bottom: 0;
+        right: 0;
+        margin-right: 10px;
+        padding: 5px;
+    }
+
+    .view-dash--control {
+        font-size: 16px;
+        display: inline-block;
+        min-width: 18px;
+        text-align: center;
+        border: rgb(250, 250, 250) 1px solid;
+        padding: 10px;
+        background: rgb(250, 250, 250);
+        border-radius: 20px;
+        margin-right: 5px;
+        text-transform: uppercase;
+        font-family: 'Courier New', Courier, monospace;
+        box-shadow:
+            0 2px 2px 0 rgba(0, 0, 0, .14),
+            0 3px 1px -2px rgba(0, 0, 0, .2),
+            0 1px 5px 0 rgba(0, 0, 0, .12);
+        transition: all 0.25s ease-in-out 0s;
+    }
+
+    .view-dash--control:hover {
+        cursor: pointer;
+        background: rgb(50, 205, 50);
+        border-color: rgb(50, 205, 50);
+        color: white;
+    }
+
+    .view-hover--none:hover {
+        cursor: default;
+        background: rgb(250, 250, 250);
+        border-color: rgb(250, 250, 250);
+        color: initial;
+    }
+
+    .view-text--norecords {
+        /* padding-top: 10px; */
+        font-size: 36px;
+        text-align: center;
+    }
+
+    .view-background--data {
+        background-image:
+            linear-gradient(90deg,
+                rgba(255, 255, 255, 0.8),
+                rgba(255, 255, 255, 0.8)),
+            url('assets/images/ic_dashboard.png');
+        background-repeat: no-repeat;
+        background-position: center;
+        background-attachment: fixed;
+        background-size: 128px 128px;
+        border-radius: 30px;
+    }
+</style>
+
+<body>
+    <!--[if lt IE 7]>
+            <p class="browsehappy">You are using an <strong>outdated</strong> browser. Please <a href="#">upgrade your browser</a> to improve your experience.</p>
+        <![endif]-->
+
+    <div id="view_dashboards" class="animate__animated animate__fadeIn">
+        <div class="view-card--fullscreen view-background--data"></div>
+    </div>
+
+    <div class="view-dash--controls">
+        <span class="view-dash--control action-dashboard--previous"><i class="fa fa-arrow-left"></i></span>
+        <span class="view-dash--control action-dashboard--pause"><i class="fa fa-pause"></i></span>
+        <span class="view-dash--control action-dashboard--next"><i class="fa fa-arrow-right"></i></span>
+        <span class="view-dash--control view-hover--none">Duration (<span class="view-text--countdown">0</span>)</span>
+        <span class="view-dash--control view-hover--none">Showing Dashboard (<span class="view-text--active">0 of
+                0</span>)</span>
+    </div>
+
+    <script src="library/jquery-3.7.0.min.js"></script>
+    <script src="library/fontawesome-free-6.4.0-web/js/all.min.js"></script>
+</body>
+
+</html>
+
+<script>
+    $(document).ready(function () {
+        $("body").delegate(".action-dashboard--pause", "click", function () {
+            if (dashboard_pause == true) {
+                dashboard_pause = false;
+                $(".action-dashboard--pause").html("<i class='fa fa-pause'></i>");
+            } else {
+                dashboard_pause = true;
+                $(".action-dashboard--pause").html("<i class='fa fa-play'></i>");
+            }
+        });
+
+        $("body").delegate(".action-dashboard--previous", "click", function () {
+            resetNavigation();
+
+            if (dashboard_index > 0) {
+                dashboard_index--;
+            } else if (dashboard_index == 0) {
+                dashboard_index = DashboardComposite.length - 1;
+            }
+
+            dashboard_pause = false;
+            dashboard_next = true;
+        });
+
+        $("body").delegate(".action-dashboard--next", "click", function () {
+            resetNavigation();
+
+            if (dashboard_index < (DashboardComposite.length - 1)) {
+                dashboard_index++;
+            } else {
+                dashboard_index = 0;
+            }
+
+            dashboard_pause = false;
+            dashboard_next = true;
+        });
+
+        //Prerequisites
+        var DashboardComposite = [];
+        var dashboard_next = true; //Set to true to allow loading of the first
+        var dashboard_index = 0; //The currently showing dashboard
+        var dashboard_countdown = 0; //Counts down to zero from active dashboards duration (for view only)
+        var dashboard_pause = false;
+        var dashboardSetTimeout = null;
+
+        //Read dashboards json
+        $.getJSON("data/dashboards.json", function (data) {
+            DashboardComposite = data;
+        })
+
+        function resetNavigation() {
+            $(".action-dashboard--pause").html("<i class='fa fa-pause'></i>");
+        }
+
+        function showDashboardInstance() {
+            //Prerequisites
+            clearTimeout(dashboardSetTimeout);
+
+            //Load next dashboard
+            dashboard_next = false;
+            $("#view_dashboards").html("<iframe title='Dashboard' id='dashboard_instance' class='view-card--fullscreen animate__animated " + DashboardComposite[dashboard_index].animation + "' src='" + DashboardComposite[dashboard_index].source + "'></iframe>");
+            $(".view-text--active").html((dashboard_index + 1) + " of " + DashboardComposite.length);
+            dashboard_countdown = (DashboardComposite[dashboard_index].duration);
+
+            //Wait for duration of current dashboard to elapse
+            dashboardSetTimeout = setTimeout(function () {
+                if (dashboard_index < (DashboardComposite.length - 1)) {
+                    dashboard_index++;
+                } else {
+                    dashboard_index = 0;
+                }
+                dashboard_next = true;
+            }, DashboardComposite[dashboard_index].duration * 1000);
+        }
+
+        //Awareness(runs every second)
+        setInterval(function () {
+            if (DashboardComposite.length > 0) {
+                if (dashboard_pause == false) {
+                    if (dashboard_next == true) {
+                        showDashboardInstance();
+                    } else {
+                        dashboard_countdown--;
+                        $(".view-text--countdown").html(dashboard_countdown);
+                    }
+                } else {
+                    //TODO! Handle dashboard paused
+                }
+            } else {
+                //TODO! Handle no records
+            }
+        }, 1000);
+    });
+</script>

@@ -1,0 +1,7 @@
+30th May, 2023 v0.1
+* Started versioning
+* Bug fixes
+    * {Pause/Resume} button showing "Resume" after navigating to next or previous dashboard instead of showing "Pause"
+* Improvements
+    * Removed hover effects from {Duration} and {Dashboard} views
+    * Replaced "Worded" navigation buttons with "Icon" navigation buttons for {Previous}, {Pause/Resume}, {Next}
