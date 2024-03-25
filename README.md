@@ -20,7 +20,7 @@ On the terminal install http-server
 While in the project directory run the project
 `http-server -p <your port>`
 
-## View teh project
+## View the project
 
 On your browser goto
 `http://localhost:<your port>`
