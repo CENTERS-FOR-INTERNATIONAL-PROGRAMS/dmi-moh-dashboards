@@ -7,8 +7,8 @@
 On linux
 `sudo apt install nodejs npm `
 On windows
--Visit https://nodejs.org/en/download/current and download latest Node version
--Download the Windows Installer (.msi) for your system architecture (32-bit or 64-bit). The 64-bit version is more common for modern systems.
+- Visit https://nodejs.org/en/download/current and download latest Node version
+- Download the Windows Installer (.msi) for your system architecture (32-bit or 64-bit). The 64-bit version is more common for modern systems.
 
 ## Install http-server
 
