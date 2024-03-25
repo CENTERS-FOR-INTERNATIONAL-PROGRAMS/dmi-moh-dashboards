@@ -13,7 +13,7 @@ On windows
 ## Install http-server
 
 On the terminal install http-server
-`ng install http-server`
+`npm install http-server`
   
 ## Run the project
 
