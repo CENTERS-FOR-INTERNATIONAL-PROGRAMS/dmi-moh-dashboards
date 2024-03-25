@@ -18,9 +18,9 @@ On the terminal install http-server
 ## Run the project
 
 While in the project directory run the project
-`http-server -p //your port//`
+`http-server -p <your port>`
 
 ## View teh project
 
 On your browser goto
-`http://localhost://your port"//`
+`http://localhost:<your port>`
